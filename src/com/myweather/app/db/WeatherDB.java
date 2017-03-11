@@ -7,8 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
 import com.myweather.app.model.City;
 import com.myweather.app.model.County;
 import com.myweather.app.model.Province;
@@ -47,9 +45,7 @@ public class WeatherDB {
 			values.put("province_name", province.getProvinceName());
 			values.put("province_code", province.getProvinceCode());
 			db.insert("Province", null, values);
-		}else{
-			Log.d("weatherDB","province is null");
-			}
+		}
 	}
 	
 	//将city实例存储到数据库
@@ -60,8 +56,6 @@ public class WeatherDB {
 			values.put("city_code", city.getCityCode());
 			values.put("province_id", city.getProvinceId());
 			db.insert("City", null, values);
-		}else{
-		Log.d("weatherDB","city is null");
 		}
 	}
 	
@@ -73,8 +67,6 @@ public class WeatherDB {
 				values.put("county_code", county.getCountyCode());
 				values.put("city_id", county.getCityId());
 				db.insert("County", null, values);
-			}else{
-				Log.d("weatherDB","county is null");
 			}
 		}
 		
@@ -98,7 +90,7 @@ public class WeatherDB {
 		//从数据库读取某省下所有城市的信息
 		public List<City> loadCities(int provinceId){
 			List<City> citiesList = new ArrayList<City>();
-			Cursor cursor = db.query("City", null, null, null, null, null, null);
+			Cursor cursor = db.query("City", null, "province_id = ?", new String[]{String.valueOf(provinceId)}, null, null, null);
 			if(cursor.moveToFirst()){
 				do{
 					City city = new City();
@@ -114,7 +106,7 @@ public class WeatherDB {
 		//从数据库读取某城市下所有县的信息
 		public List<County> loadCounties(int cityId){
 			List<County> countiesList = new ArrayList<County>();
-			Cursor cursor = db.query("County", null, null, null, null, null, null);
+			Cursor cursor = db.query("County", null, "city_id = ?", new String[]{String.valueOf(cityId)}, null, null, null);
 			if(cursor.moveToFirst()){
 				do{
 					County county = new County();
