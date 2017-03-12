@@ -45,7 +45,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	/**
 	 * 用于显示当前日期
 	 */
-	private TextView currentDateText;
+	//private TextView currentDateText;
 	/**
 	 * 切换城市按钮
 	 */
@@ -67,7 +67,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		weatherDespText = (TextView) findViewById(R.id.weather_desp);
 		temp1Text = (TextView) findViewById(R.id.temp1);
 		temp2Text = (TextView) findViewById(R.id.temp2);
-		currentDateText = (TextView) findViewById(R.id.current_date);
+		//currentDateText = (TextView) findViewById(R.id.current_date);
 		switchCity = (Button) findViewById(R.id.switch_city);
 		refreshWeather = (Button) findViewById(R.id.refresh_weather);
 		String countyCode = getIntent().getStringExtra("county_code");
@@ -178,8 +178,9 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		temp1Text.setText(prefs.getString("temp1", ""));
 		temp2Text.setText(prefs.getString("temp2", ""));
 		weatherDespText.setText(prefs.getString("weather_desp", ""));
-		publishText.setText("今天" + prefs.getString("publish_time", "") + "发布");
-		currentDateText.setText(prefs.getString("current_date", ""));
+		//publishText.setText(prefs.getString("publish_time", "") + "发布");
+		publishText.setText(prefs.getString("current_date", ""));
+		//currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
 		Intent intent = new Intent(this, AutoUpdateService.class);
