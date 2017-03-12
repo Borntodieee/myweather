@@ -42,7 +42,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@drawable/background" >
-        <!-- android:background="#27A5F9" --> 
+
+        <!-- android:background="#27A5F9" -->
 
         <TextView
             android:id="@+id/publish_text"
@@ -69,7 +70,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:textColor="#FFF"
-                android:textSize="40sp" />
+                android:textSize="40sp" />
             -->
 
             <LinearLayout
@@ -113,6 +114,14 @@
                 android:gravity="center"
                 android:textColor="#FFF"
                 android:textSize="40sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal" >
         </LinearLayout>
     </RelativeLayout>
 

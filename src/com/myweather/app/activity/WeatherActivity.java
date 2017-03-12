@@ -1,5 +1,6 @@
 package com.myweather.app.activity;
 
+import net.youmi.android.normal.banner.BannerManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -83,6 +84,23 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		}
 		switchCity.setOnClickListener(this);
 		refreshWeather.setOnClickListener(this);
+		
+		// 获取广告条
+		View bannerView = BannerManager.getInstance(this)
+		    .getBannerView(this, null);
+
+		// 获取要嵌入广告条的布局
+		LinearLayout bannerLayout = (LinearLayout) findViewById(R.id.ll_banner);
+
+		// 将广告条加入到布局中
+		bannerLayout.addView(bannerView);
+	}
+	
+	@Override
+	protected void onDestroy() {
+	        super.onDestroy();
+	        // 展示广告条窗口的 onDestroy() 回调方法中调用
+	        BannerManager.getInstance(this).onDestroy();
 	}
 
 	@Override
