@@ -3,8 +3,8 @@ package com.myweather.app.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.youmi.android.AdManager;
-import android.app.Activity;
+import net.youmi.android.normal.banner.BannerManager;
+import net.youmi.android.normal.banner.BannerViewListener;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +16,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +30,7 @@ import com.myweather.app.util.HttpCallbackListener;
 import com.myweather.app.util.HttpUtil;
 import com.myweather.app.util.Utility;
 
-public class ChooseAreaActivity extends Activity {
+public class ChooseAreaActivity extends BaseActivity {
 
 	public static final int LEVEL_PROVINCE = 0;
 	public static final int LEVEL_CITY = 1;
@@ -66,7 +67,6 @@ public class ChooseAreaActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		AdManager.getInstance(this).init("9ef50b31516dc2fb", "06ab42da676afeaf", false, true);
 		isFromWeatherActivity = getIntent().getBooleanExtra(
 				"from_weather_activity", false);
 		SharedPreferences prefs = PreferenceManager
@@ -254,5 +254,5 @@ public class ChooseAreaActivity extends Activity {
 			finish();
 		}
 	}
-
+	
 }

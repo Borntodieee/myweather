@@ -1,7 +1,10 @@
 package com.myweather.app.activity;
 
 import net.youmi.android.normal.banner.BannerManager;
-import android.app.Activity;
+import net.youmi.android.normal.banner.BannerViewListener;
+import net.youmi.android.normal.common.ErrorCode;
+import net.youmi.android.normal.spot.SpotListener;
+import net.youmi.android.normal.spot.SpotManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,7 +24,7 @@ import com.myweather.app.util.HttpCallbackListener;
 import com.myweather.app.util.HttpUtil;
 import com.myweather.app.util.Utility;
 
-public class WeatherActivity extends Activity implements OnClickListener {
+public class WeatherActivity extends BaseActivity implements OnClickListener {
 	private LinearLayout weatherInfoLayout;
 	/**
 	 * 用于显示城市名第一行代码——Android 514
@@ -84,24 +87,12 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		}
 		switchCity.setOnClickListener(this);
 		refreshWeather.setOnClickListener(this);
-		
-		// 获取广告条
-		View bannerView = BannerManager.getInstance(this)
-		    .getBannerView(this, null);
-
-		// 获取要嵌入广告条的布局
-		LinearLayout bannerLayout = (LinearLayout) findViewById(R.id.ll_banner);
-
-		// 将广告条加入到布局中
-		bannerLayout.addView(bannerView);
+		//设置广告条
+		setupBannerAd();
+		// 设置插屏广告
+		setupSpotAd();
 	}
 	
-	@Override
-	protected void onDestroy() {
-	        super.onDestroy();
-	        // 展示广告条窗口的 onDestroy() 回调方法中调用
-	        BannerManager.getInstance(this).onDestroy();
-	}
 
 	@Override
 	public void onClick(View v) {
@@ -204,4 +195,169 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		Intent intent = new Intent(this, AutoUpdateService.class);
 		startService(intent);
 	}
+	
+	/**
+	 * 设置广告条广告
+	 */
+	private void setupBannerAd() {
+				/**
+				 * 普通布局
+				 */
+				// 获取广告条
+				View bannerView = BannerManager.getInstance(mContext)
+						.getBannerView(mContext, new BannerViewListener() {
+							@Override
+							public void onRequestSuccess() {
+								logInfo("请求广告条成功");
+							}
+		
+							@Override
+							public void onSwitchBanner() {
+								logDebug("广告条切换");
+							}
+		
+							@Override
+							public void onRequestFailed() {
+								logError("请求广告条失败");
+							}
+						});
+				// 实例化广告条容器
+				LinearLayout bannerLayout = (LinearLayout) findViewById(R.id.ll_banner);
+				// 添加广告条到容器中
+				bannerLayout.addView(bannerView);
+//
+//		/**
+//		 * 悬浮布局
+//		 */
+//		// 实例化LayoutParams
+//		FrameLayout.LayoutParams layoutParams =
+//				new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//		// 设置广告条的悬浮位置，这里示例为右下角
+//		layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+//		// 获取广告条
+//		final View bannerView = BannerManager.getInstance(mContext)
+//				.getBannerView(mContext, new BannerViewListener() {
+//
+//					@Override
+//					public void onRequestSuccess() {
+//						logInfo("请求广告条成功");
+//
+//					}
+//
+//					@Override
+//					public void onSwitchBanner() {
+//						logDebug("广告条切换");
+//					}
+//
+//					@Override
+//					public void onRequestFailed() {
+//						logError("请求广告条失败");
+//					}
+//				});
+//		// 添加广告条到窗口中
+//		((Activity) mContext).addContentView(bannerView, layoutParams);
+	}
+	
+	/**
+	 * 设置插屏广告
+	 */
+	private void setupSpotAd() {
+		// 设置插屏图片类型，默认竖图
+		//		// 横图
+		//		SpotManager.getInstance(mContext).setImageType(SpotManager
+		// .IMAGE_TYPE_HORIZONTAL);
+		// 竖图
+		SpotManager.getInstance(mContext).setImageType(SpotManager.IMAGE_TYPE_VERTICAL);
+
+		// 设置动画类型，默认高级动画
+		//		// 无动画
+		//		SpotManager.getInstance(mContext).setAnimationType(SpotManager
+		// .ANIMATION_TYPE_NONE);
+		//		// 简单动画
+		//		SpotManager.getInstance(mContext).setAnimationType(SpotManager
+		// .ANIMATION_TYPE_SIMPLE);
+		// 高级动画
+		SpotManager.getInstance(mContext)
+				.setAnimationType(SpotManager.ANIMATION_TYPE_ADVANCED);
+
+				// 展示插屏广告
+				SpotManager.getInstance(mContext).showSpot(mContext, new SpotListener() {
+
+					@Override
+					public void onShowSuccess() {
+						logInfo("插屏展示成功");
+					}
+
+					@Override
+					public void onShowFailed(int errorCode) {
+						logError("插屏展示失败");
+						switch (errorCode) {
+						case ErrorCode.NON_NETWORK:
+							showShortToast("网络异常");
+							break;
+						case ErrorCode.NON_AD:
+							showShortToast("暂无插屏广告");
+							break;
+						case ErrorCode.RESOURCE_NOT_READY:
+							showShortToast("插屏资源还没准备好");
+							break;
+						case ErrorCode.SHOW_INTERVAL_LIMITED:
+							showShortToast("请勿频繁展示");
+							break;
+						case ErrorCode.WIDGET_NOT_IN_VISIBILITY_STATE:
+							showShortToast("请设置插屏为可见状态");
+							break;
+						default:
+							showShortToast("请稍后再试");
+							break;
+						}
+					}
+
+					@Override
+					public void onSpotClosed() {
+						logDebug("插屏被关闭");
+					}
+
+					@Override
+					public void onSpotClicked(boolean isWebPage) {
+						logDebug("插屏被点击");
+						logInfo("是否是网页广告？%s", isWebPage ? "是" : "不是");
+					}
+				});
+			}
+
+	
+	@Override
+	public void onBackPressed() {
+		// 点击后退关闭插屏广告
+		if (SpotManager.getInstance(mContext).isSpotShowing()) {
+			SpotManager.getInstance(mContext).hideSpot();
+		} else {
+			super.onBackPressed();
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// 插屏广告
+		SpotManager.getInstance(mContext).onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		// 插屏广告
+		SpotManager.getInstance(mContext).onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// 展示广告条窗口的 onDestroy() 回调方法中调用
+		BannerManager.getInstance(mContext).onDestroy();
+		// 插屏广告
+		SpotManager.getInstance(mContext).onDestroy();
+	}
+
 }
